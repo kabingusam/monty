@@ -60,6 +60,7 @@ int unknown_op_error(char *opcode, unsigned int line_number)
  *
  * Return: (EXIT_FAILURE) always.
  */
+ 
 int no_int_error(unsigned int line_number)
 {
 	fprintf(stderr, "L%u: usage: push integer\n", line_number);
