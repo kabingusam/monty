@@ -10,13 +10,13 @@
 0x19. C - Stacks, Queues - LIFO, FIFO
 
 
-## Compilation & Output:
+### Compilation & Output:
 
 ```
 $ gcc -Wall -Werror -Wextra -pedantic -std=c89 *.c -o monty
 
 ```
-## Usage:
+### Usage:
 
 monty file: 
 Where file is the path to the file containing Monty byte code
@@ -24,7 +24,7 @@ Where file is the path to the file containing Monty byte code
 If the user does not give any file or more than one argument to your program, print the error message USAGE: monty file, followed by a new line, and exit with the status EXIT_FAILURE
 
 
-## Table of Contents
+### Table of Contents
 ***
 1. [handle_error1.c](./handle_error1.c)
 2. [handlerror2.c](./handlerror2.c)
