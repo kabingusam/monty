@@ -149,6 +149,7 @@ int get_word_count(char *str, char *delims)
  * Return: pointer to first char of next word
  */
 
+
 char *get_next_word(char *str, char *delims)
 {
 	int pending = 0;
