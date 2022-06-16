@@ -1,15 +1,16 @@
-#ifndef _MONTY_H_
-#define _MONTY_H_
+#ifndef __MONTY_H__
+#define __MONTY_H__
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
-/*extern variable, stack or queue*/
+#define STACK 0
+#define QUEUE 1
+#define DELIMS " \n\t\a\b"
 
-extern char *flag;
-
-#define LINE_LENGTH 32
+/* GLOBAL OPCODE TOKENS */
+extern char **op_toks;
 
 /**
  * struct stack_s - doubly linked list representation of a stack (or queue)
@@ -22,13 +23,13 @@ extern char *flag;
  */
 typedef struct stack_s
 {
-        int n;
-        struct stack_s *prev;
-        struct stack_s *next;
+	int n;
+	struct stack_s *prev;
+	struct stack_s *next;
 } stack_t;
 
 /**
- * struct instruction_s - opcoode and its function
+ * struct instruction_s - opcode and its function
  * @opcode: the opcode
  * @f: function to handle the opcode
  *
@@ -37,58 +38,52 @@ typedef struct stack_s
  */
 typedef struct instruction_s
 {
-        char *opcode;
-        void (*f)(stack_t **stack, unsigned int line_number);
+	char *opcode;
+	void (*f)(stack_t **stack, unsigned int line_number);
 } instruction_t;
 
+/* PRIMARY INTERPRETER FUNCTIONS */
+void free_stack(stack_t **stack);
+int init_stack(stack_t **stack);
+int check_mode(stack_t *stack);
+void free_tokens(void);
+unsigned int token_arr_len(void);
+int run_monty(FILE *script_fd);
+void set_op_tok_error(int error_code);
 
+/* OPCODE FUNCTIONS */
+void monty_push(stack_t **stack, unsigned int line_number);
+void monty_pall(stack_t **stack, unsigned int line_number);
+void monty_pint(stack_t **stack, unsigned int line_number);
+void monty_pop(stack_t **stack, unsigned int line_number);
+void monty_swap(stack_t **stack, unsigned int line_number);
+void monty_add(stack_t **stack, unsigned int line_number);
+void monty_nop(stack_t **stack, unsigned int line_number);
+void monty_sub(stack_t **stack, unsigned int line_number);
+void monty_div(stack_t **stack, unsigned int line_number);
+void monty_mul(stack_t **stack, unsigned int line_number);
+void monty_mod(stack_t **stack, unsigned int line_number);
+void monty_pchar(stack_t **stack, unsigned int line_number);
+void monty_pstr(stack_t **stack, unsigned int line_number);
+void monty_rotl(stack_t **stack, unsigned int line_number);
+void monty_rotr(stack_t **stack, unsigned int line_number);
+void monty_stack(stack_t **stack, unsigned int line_number);
+void monty_queue(stack_t **stack, unsigned int line_number);
 
-/*basic functions related to doubly linked list*/
-stack_t *add_node(stack_t **head, const int n);
-void free_stack(stack_t *head);
-stack_t *pop_s(stack_t **head);
-stack_t *dequeue(stack_t **head);
+/* CUSTOM STANDARD LIBRARY FUNCTIONS */
+char **strtow(char *str, char *delims);
+char *get_int(int n);
 
-/*functions to print the stack or queue*/
-void pall(stack_t **h, unsigned int l);
-void pstr(stack_t **h, unsigned int l);
-void pchar(stack_t **h, unsigned int l);
-void pint(stack_t **h, unsigned int l);
+/* ERROR MESSAGES & ERROR CODES */
+int usage_error(void);
+int malloc_error(void);
+int f_open_error(char *filename);
+int unknown_op_error(char *opcode, unsigned int line_number);
+int no_int_error(unsigned int line_number);
+int pop_error(unsigned int line_number);
+int pint_error(unsigned int line_number);
+int short_stack_error(unsigned int line_number, char *op);
+int div_error(unsigned int line_number);
+int pchar_error(unsigned int line_number, char *message);
 
-/*in push_and_pop*/
-void pop(stack_t **h, unsigned int l);
-void push (stack_t **h, char *line, unsigned int l);
-
-/*in move_elements_functions*/
-void swap(stack_t **h, unsigned int l);
-void rotl(stack_t **h, unsigned int l);
-void rotr(stack_t **h, unsigned int l);
-
-/*in calculations*/
-int get_argument(stack_t **h, char *opcode, unsigned int l);
-void _add(stack_t **h, unsigned int l);
-void _sub(stack_t **h, unsigned int l);
-void _div(stack_t **h, unsigned int l);
-void _mul(stack_t **h, unsigned int l);
-void _mod(stack_t **h, unsigned int l);
-
-/*in nopandqueue*/
-void stack(stack_t **h, unsigned int l);
-void queue(stack_t **h, unsigned int l);
-void nop(stack_t **h, unsigned int l);
-
-/*in helpers*/
-char *skip_spaces(char *s);
-char *reach_number(char *s);
-int _strcmp(char *s1, char *s2);
-int _strncmp(char *s1, char *s2, int n);
-int _strlen(char *s);
-
-
-/*in execute*/
-void execute(stack_t **h, char *line, unsigned int line_number);
-
-/*in main*/
-int main(int ac, char **av);
-
-#endif
+#endif /* __MONTY_H__ */

@@ -1,49 +1,29 @@
 #include "monty.h"
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
-char *flag = "stack";
+char **op_toks = NULL;
 
 /**
- * main - main function to run monty
- * @ac: number of arguments
- * @av: list of arguments as strings
+ * main - the entry point for Monty Interp
  *
- * Return: 0
+ * @argc: the count of arguments passed to the program
+ * @argv: pointer to an array of char pointers to arguments
+ *
+ * Return: (EXIT_SUCCESS) on success (EXIT_FAILURE) on error
  */
-int main(int ac, char **av)
+int main(int argc, char **argv)
 {
-	stack_t *h;
-	unsigned int line_number;
-	ssize_t status;
-	char *line;
-	size_t length;
-	FILE *fp;
+	FILE *script_fd = NULL;
+	int exit_code = EXIT_SUCCESS;
 
-	if (ac != 2)
-	{
-		printf("USAGE: %s file\n", av[0]);
-		exit(EXIT_FAILURE);
-	}
-	h = NULL;
-	fp = fopen(av[1], "r");
-	if (fp == NULL)
-	{
-		printf("Error: Can't open file %s\n", av[1]);
-		exit(EXIT_FAILURE);
-	}
-	line_number = 0;
-	do {
-		++line_number;
-		line = NULL;
-		length = 0;
-		status = getline(&line, &length, fp);
-		if (status > 0)
-			execute(&h, line, line_number);
-		else
-			free(line);
-	} while (status >= 0);
-
-	fclose(fp);
-	free_stack(h);
-
-	return (0);
+	if (argc != 2)
+		return (usage_error());
+	script_fd = fopen(argv[1], "r");
+	if (script_fd == NULL)
+		return (f_open_error(argv[1]));
+	exit_code = run_monty(script_fd);
+	fclose(script_fd);
+	return (exit_code);
 }
